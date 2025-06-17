@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Two-Factor Authentication</title>
+
+		<!-- Bootstrap CSS -->
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+
+		<style>
+		/*  Design tokens (light mode) */:root
+		{
+			--main-color: #2c2ccc;
+			--main-color-hover: #2323a2;
+			--body-background: #f5f5f5;
+			--text-color: #333;
+			--box-bg-color: #fff;
+			--box-shadow-color: #e4e4e4;
+			--menu-active-bg: #f3f3ff;
+			--menu-active-border-color: var(--main-color);
+			--menu-badge-bg: #ff9f43;
+			--line-color: var(--body-background);
+			--scroll-bar-bg: var(--box-bg-color);
+			--scroll-bar-color: #ccc;
+			--success-color: #28c76f;
+			--danger-color: #ea5455;
+			--warning-color: #ff9f43;
+			--border-color: #ced4da;
+			--disable-text-color: #707070;
+			}/* Dark-mode overrides */:root.dark
+			{
+				--main-color: #675ad0;
+				--main-color-hover: #877be6;
+				--body-background: #121212;
+				--box-bg-color: #1d1d1d;
+				--text-color: #e1e1e1;
+				--box-shadow-color: #0a0a0a;
+				--menu-active-bg: #3c3c3c;
+				--scroll-bar-bg: var(--box-bg-color);
+				--scroll-bar-color: #000;
+				--border-color: #707070;
+			}
+
+			::selection {
+				color: #fff;
+				background-color: var(--main-color);
+			}
+			* {
+				box-sizing: border-box;
+			}
+
+			html {
+				overflow-x: hidden;
+				scrollbar-color: var(--scroll-bar-color) var(--scroll-bar-bg);
+				scrollbar-width: thin;
+				font-size: 14px;
+			}
+			html::-webkit-scrollbar-track {
+				background-color: var(--scroll-bar-bg);
+				border-radius: 10px;
+			}
+			html::-webkit-scrollbar {
+				width: 10px;
+				height: 10px;
+				background-color: var(--scroll-bar-bg);
+			}
+			html::-webkit-scrollbar-thumb {
+				border-radius: 10px;
+				background-color: var(--scroll-bar-color);
+				border: 2px solid var(--scroll-bar-bg);
+			}
+			@media(min-width: 576px) {
+				html {
+					font-size: 16px;
+				}
+			}
+
+			body {
+				margin: 0;
+				font-family: "Montserrat", sans-serif;
+				padding: 1.5rem;
+				background-color: var(--body-background);
+				color: var(--text-color);
+				min-height: 100vh;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
+			@media(min-width: 992px) {
+				body {
+					padding: 2rem;
+				}
+			}
+
+			a {
+				color: var(--main-color);
+				text-decoration: none;
+			}
+			a:hover {
+				color: var(--main-color-hover);
+			}
+
+			/* Our custom container – avoids overriding Bootstrap's .container */
+			.auth-container {
+				width: 100%;
+				max-width: 800px;
+				display: flex;
+				flex-direction: column;
+				background-color: var(--box-bg-color);
+				border-radius: 15px;
+				box-shadow: 3px 3px 6px 0 var(--box-shadow-color);
+				overflow: hidden;
+			}
+			@media(min-width: 576px) {
+				.auth-container {
+					flex-direction: row;
+				}
+			}
+
+			.image-wrapper,
+			.form-wrapper {
+				flex: 1 1 100%;
+				max-width: 100%;
+				padding: 3rem 2rem;
+			}
+			@media(min-width: 576px) {
+				.image-wrapper,
+				.form-wrapper {
+					flex: 1 1 50%;
+					max-width: 50%;
+				}
+			}
+
+			.image-wrapper {
+				background-size: cover;
+				background-position: center;
+				background-repeat: no-repeat;
+				position: relative;
+				display: flex;
+			}
+			.image-wrapper::before {
+				content: "";
+				position: absolute;
+				inset: 0;
+				background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.7));
+			}
+			.image-wrapper h1 {
+				align-self: flex-end;
+				font-size: 3.75rem; /* 60px */
+				color: #fff;
+				margin: 0;
+				z-index: 1;
+			}
+
+			/* Form area */
+			.form-wrapper .form-header,
+			.form-wrapper .form-body {
+				margin-bottom: 3rem;
+			}
+			.form-wrapper .form-header h2 {
+				font-size: 1.875rem; /* 30px */
+				margin: 0;
+			}
+			.form-wrapper .form-header p {
+				font-size: 0.875rem;
+				color: #6c757d;
+				margin-top: 1rem;
+			}
+
+			/* Inputs */
+			.form-wrapper .form-body .input-wrapper {
+				margin-bottom: 1.25rem;
+			}
+			.form-wrapper .form-body .input-wrapper label {
+				font-size: 0.875rem;
+				margin-bottom: 0.5rem;
+			}
+			.form-wrapper .form-body .input-wrapper input[type="text"],
+			.form-wrapper .form-body .input-wrapper input[type="checkbox"] {
+				border: 1px solid var(--border-color);
+				background-color: transparent;
+				color: var(--text-color);
+			}
+			.form-wrapper .form-body button {
+				width: 100%;
+				padding: 0.625rem 1rem;
+				background-color: var(--main-color);
+				border: none;
+				border-radius: 5px;
+				color: #fff;
+				font-size: 1rem;
+				cursor: pointer;
+			}
+			.form-wrapper .form-body button:hover {
+				background-color: var(--main-color-hover);
+			}
+
+			.form-wrapper .form-footer p {
+				font-size: 0.875rem;
+				margin: 0;
+			}
+	</style>
+</head>
+<body>
+	<div class="auth-container">
+		<div class="image-wrapper" style="background-image: url('https://media.istockphoto.com/photos/clothes-shop-costume-dress-fashion-store-style-concept-picture-id955641488?k=20&m=955641488&s=612x612&w=0&h=g7i-RIy3EeBiURdNr9cxI2Llt9s4UdobLMq5c738_TY=');"></div>
+
+		<div class="form-wrapper">
+			<header class="form-header">
+				<h2>{{ 'auth_code'|trans({}, 'SchebTwoFactorBundle') }}
+					{{ twoFactorProvider }}</h2>
+				<p>Please confirm access to your account by entering the authentication code provided by your authenticator application.</p>
+				<p class="text-danger">{{ authenticationError|trans(authenticationErrorData|default({}), 'SchebTwoFactorBundle') }}</p>
+			</header>
+
+			<form class="form-body needs-validation" action="{{ checkPathUrl ? checkPathUrl : path(checkPathRoute) }}" method="post" novalidate>
+
+				{% for label, messages in app.flashes %}
+					{% for message in messages %}
+						<div class="alert alert-{{ label }} mt-3" role="alert">
+							{{ message|trans }}
+						</div>
+					{% endfor %}
+				{% endfor %}
+
+				<div class="input-wrapper">
+					<label for="_auth_code">Authentication code</label>
+					<input id="_auth_code" name="{{ authCodeParameterName }}" type="text" inputmode="numeric" pattern="\d*" autocomplete="one-time-code" required>
+				</div>
+				{% if displayTrustedOption %}
+					<div class="form-check mb-3">
+						<input id="_trusted" class="form-check-input" type="checkbox" name="{{ trustedParameterName }}">
+						<label class="form-check-label" for="_trusted">{{ 'trusted'|trans({}, 'SchebTwoFactorBundle') }}</label>
+					</div>
+				{% endif %}
+
+				{% if isCsrfProtectionEnabled %}
+					<input type="hidden" name="{{ csrfParameterName }}" value="{{ csrf_token(csrfTokenId) }}">
+				{% endif %}
+
+				<button type="submit">{{ 'login'|trans({}, 'SchebTwoFactorBundle') }}</button>
+			</form>
+
+			<footer class="form-footer mt-4">
+				<p>
+					{#<a class="form-link" href="{{ path('app_2fa_resend') }}">Resend</a>#}
+				</p>
+			</footer>
+		</div>
+	</div>
+</body>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"></script>
+</html>
