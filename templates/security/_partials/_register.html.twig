@@ -36,14 +36,14 @@
 		<div class="col-xl-6">
 			<div class="login__form">
 				<label class="form__label">Password</label>
-				{{ form_widget(registrationForm.plainPassword) }}
+				{{ form_widget(registrationForm.plainPassword.first) }}
 
 			</div>
 		</div>
 		<div class="col-xl-6">
 			<div class="login__form">
 				<label class="form__label">Re-Enter Password</label>
-				<input class="common__login__input" type="password" placeholder="Re-Enter Password">
+				{{ form_widget(registrationForm.plainPassword.second) }}
 
 			</div>
 		</div>

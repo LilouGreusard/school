@@ -85,7 +85,10 @@ class RegistrationController extends AbstractController
     public function registerNavTab(Request $request): Response
     {   
         $user=new Users();
-        $form=$this->createForm(RegistrationForm::class,$user);
+        $form=$this->createForm(RegistrationForm::class,$user,[
+            'action'=>$this->generateUrl('app_register'),
+            'method'=>'POST'
+        ]);
 
         $form->handleRequest($request);
 

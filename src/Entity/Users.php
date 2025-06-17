@@ -30,7 +30,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
      * @var list<string> The user roles
      */
     #[ORM\Column]
-    private array $roles = [];
+    private array $roles = ['ROLE_USER'];
 
     /**
      * @var string The hashed password
@@ -50,8 +50,10 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
     #[ORM\Column(length: 255)]
     private ?string $userName = null;
 
-    #[ORM\Column(length: 13)]
+    // changements
+    #[ORM\Column(length: 13, nullable: true)]
     private ?string $phoneNumber = null;
+    // fin changements
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $biography = null;
@@ -128,6 +130,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
     /**
      * @param list<string> $roles
      */
+
     public function setRoles(array $roles): static
     {
         $this->roles = $roles;
