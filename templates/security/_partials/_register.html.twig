@@ -1,0 +1,62 @@
+{% for flash_error in app.flashes('verify_email_error') %}
+    <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+{% endfor %}
+{{ form_errors(registrationForm) }}
+{{ form_start(registrationForm) }}
+	<div class="row">
+		<div class="col-xl-6">
+			<div class="login__form">
+				<label class="form__label">First Name</label>
+				{{ form_widget(registrationForm.firstName) }}
+
+			</div>
+		</div>
+		<div class="col-xl-6">
+			<div class="login__form">
+				<label class="form__label">Last Name</label>
+				{{ form_widget(registrationForm.lastName) }}
+
+			</div>
+		</div>
+		<div class="col-xl-6">
+			<div class="login__form">
+				<label class="form__label">Username</label>
+				{{ form_widget(registrationForm.userName) }}
+
+			</div>
+		</div>
+		<div class="col-xl-6">
+			<div class="login__form">
+				<label class="form__label">Email</label>
+				{{ form_widget(registrationForm.email) }}
+				{{ form_errors(registrationForm.email) }}
+
+			</div>
+		</div>
+		<div class="col-xl-6">
+			<div class="login__form">
+				<label class="form__label">Password</label>
+				{{ form_widget(registrationForm.plainPassword) }}
+
+			</div>
+		</div>
+		<div class="col-xl-6">
+			<div class="login__form">
+				<label class="form__label">Re-Enter Password</label>
+				<input class="common__login__input" type="password" placeholder="Re-Enter Password">
+
+			</div>
+		</div>
+	</div>
+
+	<div class="login__form d-flex justify-content-between flex-wrap gap-2">
+		<div class="form__check">
+			{{ form_row(registrationForm.agreeTerms) }}
+			<label for="accept_pp">Accept the Terms and Privacy Policy</label>
+		</div>
+
+	</div>
+	<div class="login__button">
+		<button type="submit" class="default__button">Register</button>
+	</div>
+{{ form_end(registrationForm) }}

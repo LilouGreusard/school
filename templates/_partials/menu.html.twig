@@ -20,14 +20,19 @@
 									<a class="headerarea__has__dropdown" href="ecommerce/shop.html">{{ item.name }}
 										<i class="icofont-rounded-down"></i>
 									</a>
+                                    {% if item.categories is defined and item.categories is not empty %} {# changements #}
 									<ul class="headerarea__submenu">
+                                    {% for subitem in item.categories %} {# changements #}
 										<li>
-											<a href="ecommerce/shop.html">Shop<span class="mega__menu__label">Online Store</span>
+											<a href="ecommerce/shop.html">
+                                            {{ subitem.name }} {# changements #}
 											</a>
 										</li>
+                                        {% endfor %} {# changements #}
 									</ul>
+                                    {% endif %} {# changements #}
 								</li>
-                                {% endfor %}
+                                {% endfor %} 
 							</ul>
 						</nav>
 					</div>

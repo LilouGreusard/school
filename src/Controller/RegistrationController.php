@@ -78,5 +78,21 @@ class RegistrationController extends AbstractController
         $this->addFlash('success', 'Your email address has been verified.');
 
         return $this->redirectToRoute('app_register');
+
+        
     }
+    // changements
+    public function registerNavTab(Request $request): Response
+    {   
+        $user=new Users();
+        $form=$this->createForm(RegistrationForm::class,$user);
+
+        $form->handleRequest($request);
+
+
+        return $this->render('security/_partials/_register.html.twig',[
+            'registrationForm'=>$form->createView()
+        ]);
+    }
+    // fin changements
 }
